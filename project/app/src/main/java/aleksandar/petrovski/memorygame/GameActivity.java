@@ -1,11 +1,13 @@
 package aleksandar.petrovski.memorygame;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -52,23 +54,23 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private int getIndexFromID(int id) {
-            if (id == R.id.mb0) return 0;
-            else if (id == R.id.mb1) return 1;
-            else if (id == R.id.mb2) return 2;
-            else if (id == R.id.mb3) return 3;
-            else if (id == R.id.mb4) return 4;
-            else if (id == R.id.mb5) return 5;
-            else if (id == R.id.mb6) return 6;
-            else if (id == R.id.mb7) return 7;
-            else if (id == R.id.mb8) return 8;
-            else if (id == R.id.mb9) return 9;
-            else if (id == R.id.mb10) return 10;
-            else if (id == R.id.mb11) return 11;
-            else if (id == R.id.mb12) return 12;
-            else if (id == R.id.mb13) return 13;
-            else if (id == R.id.mb14) return 14;
-            else if (id == R.id.mb15) return 15;
-            else return -1;
+            if (id == R.id.mb0)         return 0;
+            else if (id == R.id.mb1)    return 1;
+            else if (id == R.id.mb2)    return 2;
+            else if (id == R.id.mb3)    return 3;
+            else if (id == R.id.mb4)    return 4;
+            else if (id == R.id.mb5)    return 5;
+            else if (id == R.id.mb6)    return 6;
+            else if (id == R.id.mb7)    return 7;
+            else if (id == R.id.mb8)    return 8;
+            else if (id == R.id.mb9)    return 9;
+            else if (id == R.id.mb10)   return 10;
+            else if (id == R.id.mb11)   return 11;
+            else if (id == R.id.mb12)   return 12;
+            else if (id == R.id.mb13)   return 13;
+            else if (id == R.id.mb14)   return 14;
+            else if (id == R.id.mb15)   return 15;
+            else                        return -1;
     }
 
     @Override
@@ -138,34 +140,41 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mStatisticsButton.setOnClickListener(this);
     }
 
+    public void autoRestart(@NonNull View view) {
+        int id = view.getId();
+        /* reset query */
+        mQueryButton.clear();
+        mQueryPicture.clear();
+        /* set buttons */
+        for (Button butt : mMatrixButtons) {
+            if (mSkipButton.contains(butt)) {
+                /* correct guess should not be cleared */
+                Log.i("moje", "onClick: skip this button");
+                /* button is already disabled, change only visibility */
+                butt.setVisibility(View.INVISIBLE);
+            } else {
+                butt.setEnabled(true);
+                butt.setVisibility(View.VISIBLE);
+            }
+        }
+        /* hide images */
+        for (ImageView img : mMatrixImages) {
+            if (mSkipPicture.contains(img)) {
+                /* correct guess should not be cleared */
+                Log.i("moje", "onClick: skip this picture");
+            } else {
+                img.setVisibility(View.INVISIBLE);
+            }
+        }
+        /* reset click counter */
+        mMemoPress = 0;
+    }
+
     @Override
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.startrestartbutton) {
-            /* reset query */
-            mQueryPicture.clear();
-            mQueryButton.clear();
-            /* set buttons */
-            for (Button button : mMatrixButtons) {
-                if (mSkipButton.contains(button)) {
-                    /* correct guess should not be cleared */
-                    Log.i("moje", "onClick: skip this button");
-                    /* button is already disabled, change only visibility */
-                    button.setVisibility(View.INVISIBLE);
-                } else {
-                    button.setEnabled(true);
-                    button.setVisibility(View.VISIBLE);
-                }
-            }
-            /* hide images */
-            for (ImageView img : mMatrixImages) {
-                if (mSkipPicture.contains(img)) {
-                    /* correct guess should not be cleared */
-                    Log.i("moje", "onClick: skip this picture");
-                } else {
-                    img.setVisibility(View.INVISIBLE);
-                }
-            }
+            autoRestart(view);
             if (onceStartRestart) { /* only once */
                 /* randomize images */
                 randomizeImages(30);
@@ -173,7 +182,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 mStartRestartButton.setBackgroundColor(Color.BLUE);
                 onceStartRestart = false;
             }
-            mMemoPress = 0;
+            //mMemoPress = 0;
         } else if (id == R.id.statbutton) {
             /* jump to statistics activity */
             Intent it = new Intent(GameActivity.this, StatisticsActivity.class);
@@ -192,7 +201,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 mQueryButton.add(findViewById(id));
                 /* add picture to skip query */
                 mQueryPicture.add(mMatrixImages[getIndexFromID(id)]);
-
             }
             if (mMemoPress == 1) {
                 /* disable all buttons */
@@ -206,10 +214,23 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     mSkipPicture.addAll(mQueryPicture);
                     mSkipButton.addAll(mQueryButton);
                     mScore += 5;
+                    /* autorestart other buttons now */
+                    autoRestart(view);
+                    return;
                 } else { /* incorrect guess */
                     mScore -= 1;
+                    /* autorestart buttons with delay of 1 second */
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            autoRestart(view);
+                        }
+                    }, 1000);
+                    return;
                 }
             }
+            /* increase click count */
             ++mMemoPress;
         }
     }

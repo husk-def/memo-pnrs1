@@ -9,6 +9,7 @@ public class User {
     String              mUserEmail;
     Integer             mBestScore;
     Integer             mWorstScore;
+    Integer             mCurrentScore;
     ArrayList<Integer>  mScore;
 
     private void updateBestScore() {
@@ -45,6 +46,12 @@ public class User {
         this.mUserEmail = mUserEmail;
     }
 
+    public User(String mUserName, String mUserEmail, Integer mCurrentScore) {
+        this.mUserName = mUserName;
+        this.mUserEmail = mUserEmail;
+        this.mCurrentScore = mCurrentScore;
+    }
+
     public String getmUserName() {
         return mUserName;
     }
@@ -65,6 +72,9 @@ public class User {
         return mBestScore;
     }
 
+    public Integer getmCurrentScore() { return mCurrentScore; }
+
+    public void setmCurrentScore(Integer mCurrentScore) { this.mCurrentScore = mCurrentScore; }
 //    public void setmBestScore(Integer mBestScore) {
 //        this.mBestScore = mBestScore;
 //    }
