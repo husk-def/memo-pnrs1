@@ -4,13 +4,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class StatisticsActivity extends AppCompatActivity {
+    private PlayerDBHelper  mDB;
+    private ArrayList<User> users;
+    private final String    mSQLiteName = "memory_game.db";
+
 
     private void addRandomScore(User user, int howMany) {
         Random random = new Random();
@@ -33,30 +39,28 @@ public class StatisticsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_statistics);
 
         UserAdapter userAdapter = new UserAdapter(this);
+        Intent intent = getIntent();
+        //mDB = (PlayerDBHelper) intent.getSerializableExtra("Data");
+        mDB = new PlayerDBHelper(this, mSQLiteName, null, 1);
+        mDB.setid();
+        users = new ArrayList<>();
 
-        /* add random users to userAdapter list */
-        userAdapter.addUser(new User("aleksandar", "d@yahoo"));
-        userAdapter.addUser(new User("aleksanda", "f@yahoo"));
-        userAdapter.addUser(new User("aleksand", "a@yahoo"));
-        userAdapter.addUser(new User("aleksan", "f@yahoo"));
-        userAdapter.addUser(new User("aleksa", "sdf@yahoo"));
-        userAdapter.addUser(new User("aleks", "sdf@yahoo"));
-        userAdapter.addUser(new User("alek", "af@yahoo"));
-        userAdapter.addUser(new User("ale", "adf@yahoo"));
-        userAdapter.addUser(new User("al", "asf@yhoo"));
-        userAdapter.addUser(new User("a", "asdf@aho"));
-        userAdapter.addUser(new User("andar", "asdf@ahoo"));
-        userAdapter.addUser(new User("dar", "asdf@yo"));
-        userAdapter.addUser(new User("ar", "asdf@yao"));
-        userAdapter.addUser(new User("ksandar", "asdf@yaho"));
-        userAdapter.addUser(new User("special", "special"));
-
-        /* generate random/linear scores for each user added to userAdapter */
-        int i = 0;
-        for (User user : userAdapter.getUsers()) {
-            //addLinearScore(user, 20 + i);
-            addLinearScore(user, 20 + i);
-            ++i;
+        /* fetch all distinct users */
+        ArrayList<User> temp = mDB.getDistinctUsers();
+        if (temp.isEmpty()) {
+            Log.i("moje", "empty temp arraylist wtf");
+        } else {
+            for (User user : temp) {
+                Log.i("moje", "mesaga " + user.getmUserName());
+            }
+        }
+        /* get their scores */
+        for (User user : temp) {
+            users.add(mDB.readUser(user.mUserName));
+        }
+        /* put them in adapter */
+        for (User user : users) {
+            userAdapter.addUser(user);
         }
 
 

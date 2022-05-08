@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class User {
+public class User implements Serializable {
     String              mUserName;
     String              mUserEmail;
     Integer             mBestScore;
@@ -20,9 +20,12 @@ public class User {
         this.mWorstScore = Collections.min(this.mScore);
     }
 
+
+
+
     public Serializable getNBestResults(int howMany) {
         /* sort a list in a descending order */
-        Collections.sort(this.mScore, Collections.reverseOrder());
+        this.mScore.sort(Collections.reverseOrder());
         /* add best 10 results to return */
         ArrayList<Integer> arrayList = new ArrayList<>();
         int i = 0;
@@ -50,6 +53,10 @@ public class User {
         this.mUserName = mUserName;
         this.mUserEmail = mUserEmail;
         this.mCurrentScore = mCurrentScore;
+    }
+
+    public User(String mUserName) {
+        this.mUserName = mUserName;
     }
 
     public String getmUserName() {

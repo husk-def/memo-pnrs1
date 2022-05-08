@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 import java.util.Random;
 
-
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
     private Button[]                mMatrixButtons;
     private Button                  mStartRestartButton;
@@ -30,6 +29,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<ImageView>    mQueryPicture;
     private int[]                   mWhich;
     private int                     mScore;
+    public PlayerDBHelper           mDB;
+    private User                    mCurrentUser;
+    private boolean                 mDone;
+    private final String            mSQLiteName = "memory_game.db";
 
     private void randomizeImages(int howMuch) {
         int randX, randY;
@@ -78,6 +81,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        //mDB = (PlayerDBHelper) bundle.getSerializable("data");
+        mDB = new PlayerDBHelper(this, mSQLiteName, null, 1);
+        mDB.setid();
+        String name = bundle.getString("username");
+        String email = bundle.getString("useremail");
+        mCurrentUser = new User(name, email);
+
+        Log.i("moje", "ime = " + name);
+        Log.i("moje", "email = " + email);
+
         mMatrixButtons = new Button[16];
         mMatrixImages = new ImageView[16];
         mImageHolder = new int[16];
@@ -87,6 +102,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mQueryPicture = new ArrayList<>();
         mQueryButton = new ArrayList<>();
         mScore = 0;
+        mDone = false;
 
         /* da li ovo moze drugacije ??? */
         mMatrixButtons[0] = findViewById(R.id.mb0);
@@ -142,6 +158,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     public void autoRestart(@NonNull View view) {
         int id = view.getId();
+        /* set done if done */
+        if (mSkipButton.size() == 16) {
+            mDone = true;
+        }
         /* reset query */
         mQueryButton.clear();
         mQueryPicture.clear();
@@ -181,11 +201,25 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 mStartRestartButton.setText(R.string.restart_buttontext);
                 mStartRestartButton.setBackgroundColor(Color.BLUE);
                 onceStartRestart = false;
+            } else {
+                mDB.fInsert(new User(
+                        mCurrentUser.getmUserName(),
+                        mCurrentUser.getmUserEmail(),
+                        ((mDone)? mScore : 0)   /* set score 0 if the game is prematurely finished */
+                ));
             }
-            //mMemoPress = 0;
         } else if (id == R.id.statbutton) {
+            /* if the game is done, push the result to DB, if not - do nothing */
+            if (mDone) {
+                mDB.fInsert(new User(
+                        mCurrentUser.mUserName,
+                        mCurrentUser.mUserEmail,
+                        mScore
+                ));
+            }
             /* jump to statistics activity */
             Intent it = new Intent(GameActivity.this, StatisticsActivity.class);
+            //it.putExtra("Data", mDB);
             startActivity(it);
         } else {
             /* this part takes care of other clickables - matrix buttons */
