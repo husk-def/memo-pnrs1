@@ -13,6 +13,8 @@ import java.util.ArrayList;
 public class UserAdapter extends BaseAdapter {
     private ArrayList<User> mUsers;
     private Context mContext;
+    private PlayerDBHelper playerDBHelper;
+    private final String    mSQLiteName = "memory_game.db";
 
 
     private class ViewHolder {
@@ -26,7 +28,9 @@ public class UserAdapter extends BaseAdapter {
     public UserAdapter(Context mContext) {
         this.mUsers = new ArrayList<>();
         this.mContext = mContext;
+        playerDBHelper = new PlayerDBHelper(mContext, mSQLiteName, null, 1);
     }
+
 
     public ArrayList<User> getUsers() {
         return this.mUsers;
@@ -91,7 +95,8 @@ public class UserAdapter extends BaseAdapter {
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                // should use PlayerDBHelper.delete(user.getmUserName()); instead.
+                playerDBHelper.delete(user.getmUserName());
                 removeUserByValue(user);
             }
         });
