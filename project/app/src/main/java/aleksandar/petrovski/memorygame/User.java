@@ -1,5 +1,7 @@
 package aleksandar.petrovski.memorygame;
 
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,14 +25,14 @@ public class User implements Serializable {
 
 
 
-    public Serializable getNBestResults(int howMany) {
+    public ArrayList<Integer> getNBestResults(int howMany) {
         /* sort a list in a descending order */
         this.mScore.sort(Collections.reverseOrder());
         /* add best 10 results to return */
         ArrayList<Integer> arrayList = new ArrayList<>();
         int i = 0;
         for (Integer integer : this.mScore) {
-            if (i < 10) {
+            if (i < howMany) {
                 arrayList.add(integer);
                 ++i;
             }
@@ -76,7 +78,7 @@ public class User implements Serializable {
     }
 
     public Integer getmBestScore() {
-        return mBestScore;
+        return Collections.max(mScore);
     }
 
     public Integer getmCurrentScore() { return mCurrentScore; }
@@ -86,6 +88,11 @@ public class User implements Serializable {
 //        this.mBestScore = mBestScore;
 //    }
 
+
+    public ArrayList<Integer> getmScore() {
+        return mScore;
+    }
+
     public void addScore(Integer score) {
         this.mScore.add(score);
         /* not a smart thing to do, slow */
@@ -93,7 +100,7 @@ public class User implements Serializable {
     }
 
     public Integer getmWorstScore() {
-        return mWorstScore;
+        return Collections.min(mScore);
     }
 
 //    public void setmWorstScore(Integer mWorstScore) {
