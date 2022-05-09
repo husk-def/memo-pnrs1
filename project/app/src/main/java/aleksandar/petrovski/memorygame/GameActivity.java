@@ -85,7 +85,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         Bundle bundle = intent.getExtras();
         //mDB = (PlayerDBHelper) bundle.getSerializable("data");
         mDB = new PlayerDBHelper(this, mSQLiteName, null, 1);
-        mDB.setid();
+        mDB.setId();
         String name = bundle.getString("username");
         String email = bundle.getString("useremail");
         mCurrentUser = new User(name, email);
@@ -195,9 +195,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         int id = view.getId();
         if (id == R.id.startrestartbutton) {
             autoRestart(view);
+            /* randomize images every time the restart button is pressed */
+            randomizeImages(30);
             if (onceStartRestart) { /* only once */
-                /* randomize images */
-                randomizeImages(30);
                 mStartRestartButton.setText(R.string.restart_buttontext);
                 mStartRestartButton.setBackgroundColor(Color.BLUE);
                 onceStartRestart = false;
