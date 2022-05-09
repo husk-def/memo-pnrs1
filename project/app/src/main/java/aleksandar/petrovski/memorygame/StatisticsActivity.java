@@ -13,9 +13,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class StatisticsActivity extends AppCompatActivity {
-    private PlayerDBHelper  mDB;
-    private ArrayList<User> users;
-    private final String    mSQLiteName = "memory_game.db";
 
 
     private void addRandomScore(User user, int howMany) {
@@ -41,26 +38,35 @@ public class StatisticsActivity extends AppCompatActivity {
         UserAdapter userAdapter = new UserAdapter(this);
         Intent intent = getIntent();
         //mDB = (PlayerDBHelper) intent.getSerializableExtra("Data");
-        mDB = new PlayerDBHelper(this, mSQLiteName, null, 1);
-        mDB.setid();
-        users = new ArrayList<>();
+        String mSQLiteName = "memory_game.db";
+        PlayerDBHelper mDB = new PlayerDBHelper(this, mSQLiteName, null, 1);
+        mDB.setId();
+        ArrayList<User> users = new ArrayList<>();
 
         /* fetch all distinct users */
         ArrayList<User> temp = mDB.getDistinctUsers();
-        if (temp.isEmpty()) {
-            Log.i("moje", "empty temp arraylist wtf");
+        if (temp == null) {
+            Log.i("moje", "au brate");
         } else {
-            for (User user : temp) {
-                Log.i("moje", "mesaga " + user.getmUserName());
+            if (temp.isEmpty()) {
+                Log.i("moje", "empty temp arraylist wtf");
+            } else {
+                for (User user : temp) {
+                    Log.i("moje", "mesaga " + user.getmUserName());
+                }
             }
-        }
-        /* get their scores */
-        for (User user : temp) {
-            users.add(mDB.readUser(user.mUserName));
-        }
-        /* put them in adapter */
-        for (User user : users) {
-            userAdapter.addUser(user);
+            /* get their scores */
+            for (User user : temp) {
+                users.add(mDB.readUser(user.mUserName));
+            }
+            /* put them in adapter */
+            for (User user : users) {
+                Log.i("moje", "user: " + user.getmUserName());
+                for (int i : user.getmScore()) {
+                    Log.i("moje", "\t\t" + Integer.toString(i));
+                }
+                userAdapter.addUser(user);
+            }
         }
 
 
@@ -74,6 +80,9 @@ public class StatisticsActivity extends AppCompatActivity {
                 Intent intent = new Intent(StatisticsActivity.this, DetailsActivity.class);
                 Bundle arguments = new Bundle();
                 arguments.putSerializable("arraylist", user.getNBestResults(10));
+                for (int res : user.getNBestResults(10)) {
+                    Log.i("moje", "hop: " + Integer.toString(res));
+                }
                 intent.putExtra("nBestResults", arguments);
                 intent.putExtra("userName", user.getmUserName());
                 startActivity(intent);
