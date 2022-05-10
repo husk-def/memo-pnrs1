@@ -107,18 +107,6 @@ public class PlayerDBHelper extends SQLiteOpenHelper implements Serializable {
     public User readUser(String userName) {
         User retUser = null;
         SQLiteDatabase db = getReadableDatabase();
-        //////////////////////////////////////////////////////////////////////////////
-        /////////////////////////ako ista ne valja gledaj ovde////////////////////////
-        //////////////////////////////////////////////////////////////////////////////
-//        Cursor cursor = db.query(
-//                TABLE_NAME,
-//                null,
-//                COLUMN_USERNAME + " =? ",
-//                new String[] {userName},
-//                null,
-//                null,
-//                null
-//        );
         String query = "SELECT * FROM " + TABLE_NAME + " where " + COLUMN_USERNAME + "=\"" + userName + "\"";
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.getCount() <= 0) {

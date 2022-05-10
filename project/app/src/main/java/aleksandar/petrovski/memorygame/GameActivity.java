@@ -194,7 +194,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.startrestartbutton) {
-            autoRestart(view);
             /* randomize images every time the restart button is pressed */
             randomizeImages(30);
             if (onceStartRestart) { /* only once */
@@ -207,7 +206,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         mCurrentUser.getmUserEmail(),
                         ((mDone)? mScore : 0)   /* set score 0 if the game is prematurely finished */
                 ));
+                /* clear out skips */
+                mSkipButton.clear();
+                mSkipPicture.clear();
+                /* clear out score */
+                mScore = 0;
+                /* reset gone signal */
+                mDone = false;
             }
+            autoRestart(view);
         } else if (id == R.id.statbutton) {
             /* if the game is done, push the result to DB, if not - do nothing */
             if (mDone) {
@@ -216,10 +223,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         mCurrentUser.mUserEmail,
                         mScore
                 ));
+                /* clear out skips*/
+                mSkipButton.clear();
+                mSkipPicture.clear();
+                /* clear out score */
+                mScore = 0;
+                /* reset done sig */
+                mDone = false;
+                /* reset oncestartrestart */
+                onceStartRestart = true;
             }
             /* jump to statistics activity */
             Intent it = new Intent(GameActivity.this, StatisticsActivity.class);
-            //it.putExtra("Data", mDB);
             startActivity(it);
         } else {
             /* this part takes care of other clickables - matrix buttons */
@@ -250,7 +265,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     mScore += 5;
                     /* autorestart other buttons now */
                     autoRestart(view);
-                    return;
                 } else { /* incorrect guess */
                     mScore -= 1;
                     /* autorestart buttons with delay of 1 second */
@@ -261,8 +275,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                             autoRestart(view);
                         }
                     }, 1000);
-                    return;
                 }
+                return;
             }
             /* increase click count */
             ++mMemoPress;
