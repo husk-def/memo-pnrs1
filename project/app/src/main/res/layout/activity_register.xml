@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".RegisterActivity"
     android:orientation="vertical">
 
     <LinearLayout
@@ -18,14 +18,14 @@
             android:layout_weight="1"
             android:text="@string/username_textview"
             android:gravity="center"
-            android:id="@+id/usernametext"/>
+            android:id="@+id/usernametext_reg"/>
         <EditText
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:hint="@string/username_edittext"
             android:gravity="center"
-            android:id="@+id/usernameedit"/>
+            android:id="@+id/usernameedit_reg"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:layout_weight="1"
             android:text="@string/password_textview"
             android:gravity="center"
-            android:id="@+id/passwordtext"/>
+            android:id="@+id/passwordtext_reg"/>
         <EditText
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -45,7 +45,7 @@
             android:hint="@string/password_edittext"
             android:gravity="center"
             android:inputType="textPassword"
-            android:id="@+id/passwordedit"/>
+            android:id="@+id/passwordedit_reg"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,27 +57,20 @@
             android:layout_weight="1"
             android:text="@string/email"
             android:gravity="center"
-            android:id="@+id/emailtext"/>
+            android:id="@+id/emailtext_reg"/>
         <EditText
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:hint="@string/emailedit"
             android:gravity="center"
-            android:id="@+id/emailedit"/>
+            android:id="@+id/emailedit_reg"/>
     </LinearLayout>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/login_text"
-        android:layout_gravity="center"
-        android:id="@+id/loginbutton"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/register"
         android:layout_gravity="center"
-        android:id="@+id/registerbutton"/>
-
+        android:id="@+id/registerbutton_reg"/>
 
 </LinearLayout>
