@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRegisterButton = findViewById(R.id.registerbutton);
         mUser = findViewById(R.id.usernameedit);
         mPass = findViewById(R.id.passwordedit);
-        mEmail = findViewById(R.id.emailedit);
         httpHelper = new HttpHelper();
+        // not used
 
         playerDBHelper = new PlayerDBHelper(this, mSQLiteName, null, 1);
         playerDBHelper.setId();
@@ -91,40 +91,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mPass.setError(getString(R.string.error_empty_password));
                 return;
             }
-            if (mEmail.getText().toString().equals("")) {
-                mEmail.setError(getString(R.string.error_empty_email));
-                return;
-            }
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     JSONObject jsonObject = new JSONObject();
                     try {
                         jsonObject.put("username", mUser.getText().toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
                         jsonObject.put("password", mPass.getText().toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
                         Log.i("moje", jsonObject.getString("username") + jsonObject.getString("password"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        boolean bool = httpHelper.postJSONObjectFromURL("http://192.168.43.148:3000/auth/signin", jsonObject);
-                        if (!bool) {
+
+                        Integer i = httpHelper.postJSONObjectFromURL("http://192.168.43.148:3000/auth/signin", jsonObject);
+                        if (i == 400) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(MainActivity.this, "username or password not found", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MainActivity.this, "DATA_INCORRECT", Toast.LENGTH_SHORT).show();
                                 }
                             });
+                        } else if (i == 201) {
+                            Intent intent = new Intent(MainActivity.this, GameActivity.class);
+                            intent.putExtra("username", mUser.getText().toString());
+                            startActivity(intent);
                         } else {
-
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(MainActivity.this, "CONNECTION_FAILED", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -133,14 +127,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }).start();
-
-            /* add that user to database for next activity */
-            currentUser = new User(mUser.getText().toString(), mEmail.getText().toString());
-            /* send this user and database through intent */
-            Intent intent = new Intent(MainActivity.this, GameActivity.class);
-            intent.putExtra("username", currentUser.getmUserName());
-            intent.putExtra("useremail", currentUser.getmUserEmail());
-            startActivity(intent);
         } else if (view.getId() == R.id.registerbutton) {
             Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
             startActivity(intent);

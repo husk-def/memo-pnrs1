@@ -20,4 +20,5 @@
     <string name="emailedit">email</string>
     <string name="error_empty_email">Cannot input empty email.</string>
     <string name="register">register</string>
+    <string name="refresh">refresh</string>
 </resources>

@@ -65,7 +65,8 @@ public class HttpHelper {
         StringBuilder sb = new StringBuilder();
         String line;
         while ((line = br.readLine()) != null) {
-            sb.append(line + "\n");
+
+         sb.append(line + "\n");
         }
         br.close();
 
@@ -77,7 +78,7 @@ public class HttpHelper {
     }
 
     /*HTTP post*/
-    public boolean postJSONObjectFromURL(String urlString, JSONObject jsonObject) throws IOException, JSONException {
+    public int postJSONObjectFromURL(String urlString, JSONObject jsonObject) throws IOException, JSONException {
         HttpURLConnection urlConnection = null;
         java.net.URL url = new URL(urlString);
         urlConnection = (HttpURLConnection) url.openConnection();
@@ -90,7 +91,7 @@ public class HttpHelper {
         try {
             urlConnection.connect();
         } catch (IOException e) {
-            return false;
+            return -1;
         }
         DataOutputStream os = new DataOutputStream(urlConnection.getOutputStream());
         /*write json object*/
@@ -101,7 +102,7 @@ public class HttpHelper {
         Log.i("STATUS", String.valueOf(urlConnection.getResponseCode()));
         Log.i("MSG" , urlConnection.getResponseMessage());
         urlConnection.disconnect();
-        return (responseCode==SUCCESS);
+        return responseCode;
     }
 
     /*HTTP delete*/

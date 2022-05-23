@@ -7,13 +7,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class StatisticsActivity extends AppCompatActivity {
-
+    private Button refreshButton;
 
     private void addRandomScore(User user, int howMany) {
         Random random = new Random();
@@ -34,6 +35,15 @@ public class StatisticsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
+
+        refreshButton = findViewById(R.id.refreshstatistics);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // tood refresh
+            }
+        });
+
 
         UserAdapter userAdapter = new UserAdapter(this);
         Intent intent = getIntent();

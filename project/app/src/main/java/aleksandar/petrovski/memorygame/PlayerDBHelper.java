@@ -87,7 +87,8 @@ public class PlayerDBHelper extends SQLiteOpenHelper implements Serializable {
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, idOffset++);                   /* this is where idOffset increases */
         values.put(COLUMN_USERNAME, user.getmUserName());
-        values.put(COLUMN_EMAIL, user.getmUserEmail());
+        //values.put(COLUMN_EMAIL, user.getmUserEmail());
+        values.put(COLUMN_EMAIL, "not used");
         values.put(COLUMN_POINTS, user.getmCurrentScore());
 
         db.insert(TABLE_NAME, null, values);
@@ -171,7 +172,8 @@ public class PlayerDBHelper extends SQLiteOpenHelper implements Serializable {
 
     private User createUser(Cursor cursor) {
         String userName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME));
-        String email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL));
+        //String email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL));
+        String email = "not used";
         //String email = "tood";
 
         return new User(userName, email);

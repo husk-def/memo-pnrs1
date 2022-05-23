@@ -13,6 +13,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -76,6 +80,41 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             else                        return -1;
     }
 
+    private void addGameToServer(String userName, int score) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("username", userName);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    jsonObject.put("score", score);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                HttpHelper httpHelper = new HttpHelper();
+                try {
+                    Integer i = httpHelper.postJSONObjectFromURL("http://192.168.43.148:3000/score", jsonObject);
+                    if (true) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                            }
+                        });
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,11 +126,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mDB = new PlayerDBHelper(this, mSQLiteName, null, 1);
         mDB.setId();
         String name = bundle.getString("username");
-        String email = bundle.getString("useremail");
-        mCurrentUser = new User(name, email);
+        mCurrentUser = new User(name);
 
         Log.i("moje", "ime = " + name);
-        Log.i("moje", "email = " + email);
 
         mMatrixButtons = new Button[16];
         mMatrixImages = new ImageView[16];
@@ -201,11 +238,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 mStartRestartButton.setBackgroundColor(Color.BLUE);
                 onceStartRestart = false;
             } else {
-                mDB.fInsert(new User(
-                        mCurrentUser.getmUserName(),
-                        mCurrentUser.getmUserEmail(),
-                        ((mDone)? mScore : 0)   /* set score 0 if the game is prematurely finished */
-                ));
+                /* save the game here */
+//                mDB.fInsert(new User(
+//                        mCurrentUser.getmUserName(),
+//                        mCurrentUser.getmUserEmail(),
+//                        ((mDone)? mScore : 0)   /* set score 0 if the game is prematurely finished */
+//                ));
+                addGameToServer(mCurrentUser.getmUserName(), ((mDone)? mScore : 0));
                 /* clear out skips */
                 mSkipButton.clear();
                 mSkipPicture.clear();
@@ -218,11 +257,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.statbutton) {
             /* if the game is done, push the result to DB, if not - do nothing */
             if (mDone) {
-                mDB.fInsert(new User(
-                        mCurrentUser.mUserName,
-                        mCurrentUser.mUserEmail,
-                        mScore
-                ));
+                /* save the game here */
+//                mDB.fInsert(new User(
+//                        mCurrentUser.mUserName,
+//                        mCurrentUser.mUserEmail,
+//                        mScore
+//                ));
+                addGameToServer(mCurrentUser.getmUserName(), mScore);
                 /* clear out skips*/
                 mSkipButton.clear();
                 mSkipPicture.clear();

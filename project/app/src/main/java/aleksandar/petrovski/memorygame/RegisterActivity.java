@@ -2,6 +2,7 @@ package aleksandar.petrovski.memorygame;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText mUser, mPass, mEmail;
     private Button mRegisterButton;
     private HttpHelper httpHelper;
+    String postURL = "http://192.168.43.148:3000/auth/signup";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,30 +43,27 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("username", mUser.getText().toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
                     jsonObject.put("password", mPass.getText().toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
                     jsonObject.put("email", mEmail.getText().toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    boolean bool = httpHelper.postJSONObjectFromURL("http://192.168.43.148:3000/auth/signup", jsonObject);
-                    if (!bool) {
+
+                    Integer i = httpHelper.postJSONObjectFromURL(postURL, jsonObject);
+                    if (i == 201) {
+                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    } else if (i == -1) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(RegisterActivity.this, "username, passwor or email is wrong", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "CONNECTION_FAILED", Toast.LENGTH_SHORT).show();
                             }
                         });
-                    } else {
-
+                    } else if (i == 400) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(RegisterActivity.this, "DATA_INCORRECT", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
