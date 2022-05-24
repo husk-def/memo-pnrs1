@@ -38,42 +38,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         playerDBHelper = new PlayerDBHelper(this, mSQLiteName, null, 1);
         playerDBHelper.setId();
-
-        playerDBHelper.fInsert(new User("ime", "email", 4));
-        playerDBHelper.fInsert(new User("ime", "email", 2));
-        playerDBHelper.fInsert(new User("ime", "email", 4));
-        playerDBHelper.fInsert(new User("ime", "email", 6));
-        playerDBHelper.fInsert(new User("ime", "email", 8));
-        playerDBHelper.fInsert(new User("ime", "email", 10));
-        playerDBHelper.fInsert(new User("ime", "email", 42));
-        playerDBHelper.fInsert(new User("ime", "email", 44));
-        playerDBHelper.fInsert(new User("ime", "email", 14));
-        playerDBHelper.fInsert(new User("ime", "email", 24));
-        playerDBHelper.fInsert(new User("ime", "email", 34));
-        playerDBHelper.fInsert(new User("ime", "email", 44));
-        playerDBHelper.fInsert(new User("ime", "email", 46));
-        playerDBHelper.fInsert(new User("ime", "email", 47));
-        playerDBHelper.fInsert(new User("ime", "email", 13));
-        playerDBHelper.fInsert(new User("ime", "email", 466));
-        playerDBHelper.fInsert(new User("ime", "email", 41));
-        playerDBHelper.fInsert(new User("mane", "efag", 4));
-        playerDBHelper.fInsert(new User("mane", "efag", 2));
-        playerDBHelper.fInsert(new User("mane", "efag", 4));
-        playerDBHelper.fInsert(new User("mane", "efag", 6));
-        playerDBHelper.fInsert(new User("mane", "efag", 8));
-        playerDBHelper.fInsert(new User("mane", "efag", 10));
-        playerDBHelper.fInsert(new User("mane", "efag", 42));
-        playerDBHelper.fInsert(new User("mane", "efag", 44));
-        playerDBHelper.fInsert(new User("mane", "efag", 14));
-        playerDBHelper.fInsert(new User("mane", "efag", 24));
-        playerDBHelper.fInsert(new User("mane", "efag", 34));
-        playerDBHelper.fInsert(new User("mane", "efag", 44));
-        playerDBHelper.fInsert(new User("mane", "efag", 46));
-        playerDBHelper.fInsert(new User("mane", "efag", 47));
-        playerDBHelper.fInsert(new User("mane", "efag", 13));
-        playerDBHelper.fInsert(new User("mane", "efag", 222));
-        playerDBHelper.fInsert(new User("mane", "efag", 41));
-
         //playerDBHelper.restore();
 
         mLoginButton.setOnClickListener(this);

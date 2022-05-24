@@ -46,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     jsonObject.put("password", mPass.getText().toString());
                     jsonObject.put("email", mEmail.getText().toString());
 
-                    Integer i = httpHelper.postJSONObjectFromURL(postURL, jsonObject);
+                    int i = httpHelper.postJSONObjectFromURL(postURL, jsonObject);
                     if (i == 201) {
                         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                         startActivity(intent);
@@ -65,9 +65,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             }
                         });
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
+                } catch (IOException | JSONException e) {
                     e.printStackTrace();
                 }
             }

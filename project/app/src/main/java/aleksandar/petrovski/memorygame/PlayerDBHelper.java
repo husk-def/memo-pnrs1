@@ -75,6 +75,12 @@ public class PlayerDBHelper extends SQLiteOpenHelper implements Serializable {
 
     }
 
+    public void deleteAll() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("delete from "+ TABLE_NAME);
+        db.close();
+    }
+
     public void restore() {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DROP TABLE " + TABLE_NAME);

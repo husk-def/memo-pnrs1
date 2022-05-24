@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +38,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private User                    mCurrentUser;
     private boolean                 mDone;
     private final String            mSQLiteName = "memory_game.db";
+    private final String            URL = "http://192.168.43.148:3000";
 
     private void randomizeImages(int howMuch) {
         int randX, randY;
@@ -85,30 +87,28 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void run() {
                 JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("username", userName);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    jsonObject.put("score", score);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
                 HttpHelper httpHelper = new HttpHelper();
                 try {
-                    Integer i = httpHelper.postJSONObjectFromURL("http://192.168.43.148:3000/score", jsonObject);
-                    if (true) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                            }
-                        });
+                    jsonObject.put("username", userName);
+                    jsonObject.put("score", (score == 0) ? -1 : score);
+                    Log.i("moje", "run: add score from " + userName + " = " + score);
+                    int i = httpHelper.postJSONObjectFromURL(URL + "/score", jsonObject);
+                    switch (i) {
+                        case 201:
+                            /* everything is good */
+                            Log.i("moje", "run: game added successfully");
+                            break;
+                        case 400: // FALLTHROUGH
+                        case -1:
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(GameActivity.this, "CONNECTION_FAILED " + i, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            break;
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
+                } catch (IOException | JSONException e) {
                     e.printStackTrace();
                 }
             }
@@ -122,11 +122,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        //mDB = (PlayerDBHelper) bundle.getSerializable("data");
         mDB = new PlayerDBHelper(this, mSQLiteName, null, 1);
         mDB.setId();
         String name = bundle.getString("username");
         mCurrentUser = new User(name);
+
+        Log.i("debag", "onCreate: mCurrentUser = " + name);
 
         Log.i("moje", "ime = " + name);
 
@@ -276,6 +277,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
             /* jump to statistics activity */
             Intent it = new Intent(GameActivity.this, StatisticsActivity.class);
+            it.putExtra("username", mCurrentUser.getmUserName());
             startActivity(it);
         } else {
             /* this part takes care of other clickables - matrix buttons */

@@ -10,11 +10,32 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class StatisticsActivity extends AppCompatActivity {
-    private Button refreshButton;
+    private Button  refreshButton;
+    String          mSQLiteName = "memory_game.db";
+    PlayerDBHelper  mDB;
+    String          URL = "http://192.168.43.148:3000";
+    UserAdapter     userAdapter;
+    ArrayList<User> users;
+
+
+    private static String   me;
+
+
+    HttpHelper httpHelper;
+
+    public static String getMe() {
+        Log.i("moje", "getMe: " + me);
+        return me;
+    }
 
     private void addRandomScore(User user, int howMany) {
         Random random = new Random();
@@ -31,29 +52,43 @@ public class StatisticsActivity extends AppCompatActivity {
         user.updateBestWorstScore();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_statistics);
-
-        refreshButton = findViewById(R.id.refreshstatistics);
-        refreshButton.setOnClickListener(new View.OnClickListener() {
+    private void refreshLocalDatabaseAndUpdateAdapter() {
+        new Thread(new Runnable() {
             @Override
-            public void onClick(View view) {
-                // tood refresh
+            public void run() {
+                userAdapter.mUsers.clear();
+                mDB.deleteAll();
+            try {
+                JSONArray jsonArray = httpHelper.getJSONArrayFromURL(URL + "/score");
+                for (int i = 0; i < jsonArray.length(); ++i) {
+                    String userName = jsonArray.getJSONObject(i).getString("username");
+                    int score = jsonArray.getJSONObject(i).getInt("score");
+                    Log.i("moje", "run: username " + userName + " score " + score);
+                    User user = new User(userName);
+                    user.setmCurrentScore(score);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDB.fInsert(user);
+                        }
+                    });
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateAdapter();
+                        userAdapter.notifyDSC();
+                    }
+                });
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        });
+        }).start();
+    }
 
-
-        UserAdapter userAdapter = new UserAdapter(this);
-        Intent intent = getIntent();
-        //mDB = (PlayerDBHelper) intent.getSerializableExtra("Data");
-        String mSQLiteName = "memory_game.db";
-        PlayerDBHelper mDB = new PlayerDBHelper(this, mSQLiteName, null, 1);
-        mDB.setId();
-        ArrayList<User> users = new ArrayList<>();
-
-        /* fetch all distinct users */
+    public void updateAdapter() {
+        userAdapter.mUsers.clear();
         ArrayList<User> temp = mDB.getDistinctUsers();
         if (temp == null) {
             Log.i("moje", "au brate");
@@ -78,6 +113,37 @@ public class StatisticsActivity extends AppCompatActivity {
                 userAdapter.addUser(user);
             }
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_statistics);
+
+        Bundle bundle = getIntent().getExtras();
+        me = bundle.getString("username");
+
+        Log.i("moje", "onCreate: me = " + me);
+
+        mDB = new PlayerDBHelper(this, mSQLiteName, null, 1);
+        mDB.setId();
+
+        httpHelper = new HttpHelper();
+
+        refreshButton = findViewById(R.id.refreshstatistics);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                userAdapter = new UserAdapter(getApplicationContext());
+                refreshLocalDatabaseAndUpdateAdapter();
+            }
+        });
+
+        refreshLocalDatabaseAndUpdateAdapter();
+
+        userAdapter = new UserAdapter(this);
+        users = new ArrayList<>();
+
 
 
         ListView listView = findViewById(R.id.listvju);

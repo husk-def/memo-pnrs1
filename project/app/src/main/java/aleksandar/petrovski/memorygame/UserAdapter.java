@@ -1,6 +1,7 @@
 package aleksandar.petrovski.memorygame;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,16 +9,20 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class UserAdapter extends BaseAdapter {
-    private ArrayList<User> mUsers;
-    private Context mContext;
-    private PlayerDBHelper playerDBHelper;
-    private final String    mSQLiteName = "memory_game.db";
+    public ArrayList<User>          mUsers;
+    private final Context           mContext;
+    private final PlayerDBHelper    playerDBHelper;
+    private final String            mSQLiteName = "memory_game.db";
+    private final String            URL = "http://192.168.43.148:3000";
 
 
-    private class ViewHolder {
+    private static class ViewHolder {
         TextView    username;
         TextView    email;
         TextView    bestscore;
@@ -98,8 +103,21 @@ public class UserAdapter extends BaseAdapter {
                 // should use PlayerDBHelper.delete(user.getmUserName()); instead.
                 playerDBHelper.delete(user.getmUserName());
                 removeUserByValue(user);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            HttpHelper httpHelper = new HttpHelper();
+                            boolean del = httpHelper.httpDelete(URL + "/score/?username=" + user.getmUserName());
+                            Log.i("debag", "run: bool = " + del);
+                        } catch (JSONException | IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
         });
+        holder.button.setEnabled(StatisticsActivity.getMe().equals(user.getmUserName()));
         return view;
     }
 
@@ -114,6 +132,10 @@ public class UserAdapter extends BaseAdapter {
 
     public void removeUser(User user) {
         mUsers.remove(user);
+        notifyDataSetChanged();
+    }
+
+    public void notifyDSC() {
         notifyDataSetChanged();
     }
 }
