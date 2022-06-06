@@ -1,0 +1,43 @@
+    private final String            URL = "http://192.168.43.69:3000";
+                // should use PlayerDBHelper.delete(user.getmUserName()); instead.
+    private final String    URL = "http://192.168.43.69:3000";
+    //public static Context thisContext;
+            // todo add push notification
+    private final String            URL = "http://192.168.43.69:3000";
+            // indexes to swap
+            // swap pictures
+            // temp <= x
+            // x <= y
+            // y <= temp
+            // remember this in imageHolder
+                        case 400: // FALLTHROUGH
+//                mDB.fInsert(new User(
+//                        mCurrentUser.getmUserName(),
+//                        mCurrentUser.getmUserEmail(),
+//                        ((mDone)? mScore : 0)   /* set score 0 if the game is prematurely finished */
+//                ));
+//                mDB.fInsert(new User(
+//                        mCurrentUser.mUserName,
+//                        mCurrentUser.mUserEmail,
+//                        mScore
+//                ));
+//    public void setmBestScore(Integer mBestScore) {
+//        this.mBestScore = mBestScore;
+//    }
+        //updateBestScore();
+//    public void setmWorstScore(Integer mWorstScore) {
+//        this.mWorstScore = mWorstScore;
+//    }
+    private final String    URL = "http://192.168.43.69:3000";
+        // TODO Auto-generated method stub
+        // TODO Auto-generated method stub
+                    // intent.putExtra("DATAPASSED", i);
+                    // todo update
+                    // TODO Auto-generated catch block
+        // not used
+        //playerDBHelper.restore();
+                        int i = httpHelper.postJSONObjectFromURL("http://192.168.43.69:3000/auth/signin", jsonObject);
+    String postURL = "http://192.168.43.69:3000/auth/signup";
+        //values.put(COLUMN_EMAIL, user.getmUserEmail());
+        //String email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL));
+        //String email = "tood";

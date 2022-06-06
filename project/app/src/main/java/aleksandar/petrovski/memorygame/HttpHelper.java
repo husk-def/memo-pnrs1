@@ -21,6 +21,7 @@ public class HttpHelper {
         java.net.URL url = new URL(urlString);
         urlConnection = (HttpURLConnection) url.openConnection();
         /*header fields*/
+
         urlConnection.setRequestMethod("GET");
         urlConnection.setRequestProperty("Accept", "application/json");
         urlConnection.setReadTimeout(10000 /* milliseconds */ );

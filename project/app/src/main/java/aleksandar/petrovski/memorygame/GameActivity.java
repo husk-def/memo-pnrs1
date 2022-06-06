@@ -38,7 +38,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private User                    mCurrentUser;
     private boolean                 mDone;
     private final String            mSQLiteName = "memory_game.db";
-    private final String            URL = "http://192.168.43.148:3000";
+    private final String            URL = "http://192.168.43.69:3000";
 
     private void randomizeImages(int howMuch) {
         int randX, randY;

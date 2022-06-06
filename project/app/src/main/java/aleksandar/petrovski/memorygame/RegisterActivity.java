@@ -18,7 +18,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText mUser, mPass, mEmail;
     private Button mRegisterButton;
     private HttpHelper httpHelper;
-    String postURL = "http://192.168.43.148:3000/auth/signup";
+    String postURL = "http://192.168.43.69:3000/auth/signup";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

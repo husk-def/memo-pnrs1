@@ -19,7 +19,7 @@ public class UserAdapter extends BaseAdapter {
     private final Context           mContext;
     private final PlayerDBHelper    playerDBHelper;
     private final String            mSQLiteName = "memory_game.db";
-    private final String            URL = "http://192.168.43.148:3000";
+    private final String            URL = "http://192.168.43.69:3000";
 
 
     private static class ViewHolder {

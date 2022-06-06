@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mLoginButton = findViewById(R.id.loginbutton);
         mRegisterButton = findViewById(R.id.registerbutton);
         mUser = findViewById(R.id.usernameedit);
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         jsonObject.put("password", mPass.getText().toString());
                         Log.i("moje", jsonObject.getString("username") + jsonObject.getString("password"));
 
-                        Integer i = httpHelper.postJSONObjectFromURL("http://192.168.43.148:3000/auth/signin", jsonObject);
+                        int i = httpHelper.postJSONObjectFromURL("http://192.168.43.69:3000/auth/signin", jsonObject);
                         if (i == 400) {
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -84,9 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 }
                             });
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
+                    } catch (IOException | JSONException e) {
                         e.printStackTrace();
                     }
                 }
